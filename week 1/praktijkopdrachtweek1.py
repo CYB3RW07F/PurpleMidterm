@@ -3,6 +3,7 @@ import os    # Voor het uitvoeren van systeemcommando's (zoals clear screen)
 import subprocess  # Voor het uitvoeren van PowerShell commando's
 import ctypes      # Voor het controleren van administrator rechten
 import sys         # Voor het afsluiten van het programma
+from art import *  # Voor het maken van ASCII art
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -13,37 +14,6 @@ def is_admin():
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         # Als er een fout optreedt, ga uit van geen admin rechten
-        return False
-
-def controleer_defender_status():
-    try:
-        # Print een bericht dat we bezig zijn
-        print("\n[*] Windows Defender status controleren...")
-        
-        # Voer PowerShell commando uit om Defender status op te halen
-        # Get-MpPreference haalt alle Defender instellingen op
-        result = subprocess.run(
-            ['powershell', '-Command', 'Get-MpPreference | Select-Object DisableRealtimeMonitoring'],
-            capture_output=True,  # Vang de output op
-            text=True,            # Geef output als tekst terug
-            check=True            # Gooi een fout als het commando faalt
-        )
-        
-        # Laat de huidige status zien aan de gebruiker
-        print("\nHuidige Windows Defender status:")
-        print(result.stdout)
-        input("Druk op Enter om terug te gaan naar het menu...")
-        clear()
-        return True  # Geef True terug als alles goed ging
-        
-    except subprocess.CalledProcessError as e:
-        # Deze fout treedt op als PowerShell een fout geeft
-        print(f"[!] Fout bij het controleren van de status: {e}")
-        return False
-        
-    except Exception as e:
-        # Vang alle andere onverwachte fouten op
-        print(f"[!] Onverwachte fout: {e}")
         return False
     
 def schakel_defender_uit():
@@ -119,6 +89,39 @@ def schakel_defender_in():
         print(f"\n[!] Onverwachte fout opgetreden: {e}")
         return False
 
+def controleer_defender_status():
+    try:
+        # Print een bericht dat we bezig zijn
+        print("\n[*] Windows Defender status controleren...")
+        
+        # Voer PowerShell commando uit om Defender status op te halen
+        # Get-MpPreference haalt alle Defender instellingen op
+        result = subprocess.run(
+            ['powershell', '-Command', 'Get-MpPreference | Select-Object DisableRealtimeMonitoring'],
+            capture_output=True,  # Vang de output op
+            text=True,            # Geef output als tekst terug
+            check=True            # Gooi een fout als het commando faalt
+        )
+        
+        # Laat de huidige status zien aan de gebruiker
+        print("\nHuidige Windows Defender status:")
+        print(result.stdout)
+        print("False = Defender is ingeschakeld")
+        print("True = Defender is uitgeschakeld")
+        input("\nDruk op Enter om terug te gaan naar het menu...")
+        clear()
+        return True  # Geef True terug als alles goed ging
+        
+    except subprocess.CalledProcessError as e:
+        # Deze fout treedt op als PowerShell een fout geeft
+        print(f"[!] Fout bij het controleren van de status: {e}")
+        return False
+        
+    except Exception as e:
+        # Vang alle andere onverwachte fouten op
+        print(f"[!] Onverwachte fout: {e}")
+        return False
+
 def main():
     """
     Hoofdfunctie - dit is waar het programma start.
@@ -126,12 +129,16 @@ def main():
     """
     while True:
         # Print een mooie header
-        print("=" * 50)
-        print("\nw1nd0WS D3F3nD3R k1ll3R by CYB3RW07F\n")
-        print("=" * 50)
+        border = "=" * 65
+        print(border,'\n')
+        Art=text2art("W1ND0WS")
+        print(Art)
+        Art=text2art("0FF3ND3R")
+        print(Art)
+        print(border)
 
         # Toon het menu met opties
-        print("\n0pt10n2:")
+        print("\nMenu:")
         print("1. Windows Defender uitschakelen")
         print("2. Windows Defender inschakelen")
         print("3. Status opnieuw controleren")
@@ -161,8 +168,7 @@ def main():
                 clear()
                 # Optie 4: Programma afsluiten
                 print("[*] Script wordt afgesloten...")
-                print("Staat je defender nou aan of uit?")
-                sys.exit(0)
+                break
                 
             else:
                 # De gebruiker heeft een ongeldige keuze ingevoerd
