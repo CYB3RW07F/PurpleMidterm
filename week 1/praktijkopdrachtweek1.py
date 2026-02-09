@@ -1,5 +1,5 @@
 # Importeer benodigde modules
-import os
+import os    # Voor het uitvoeren van systeemcommando's (zoals clear screen)
 import subprocess  # Voor het uitvoeren van PowerShell commando's
 import ctypes      # Voor het controleren van administrator rechten
 import sys         # Voor het afsluiten van het programma
@@ -46,7 +46,6 @@ def controleer_defender_status():
         print(f"[!] Onverwachte fout: {e}")
         return False
     
-
 def schakel_defender_uit():
     """
     Functie om Windows Defender uit te schakelen.
@@ -119,7 +118,6 @@ def schakel_defender_in():
         # Vang alle andere fouten op
         print(f"\n[!] Onverwachte fout opgetreden: {e}")
         return False
-    input()
 
 def main():
     """
